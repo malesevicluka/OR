@@ -16,10 +16,10 @@ Ovaj skup podataka sadrži informacije o noćnim klubovima u Zagrebu, uključuju
   - **Adresa:** Lokacija kluba
   - **Kvart:** Gradski dio u kojem se klub nalazi
   - **Kapacitet:** Maksimalni broj posjetitelja koji klub može primiti
-  - **Facebook:** Link na Facebook stranicu kluba
-  - **Instagram:** Link na Instagram profil kluba
-  - **Kontakt:** Telefonski broj za kontakt s klubom
-  - **Recenzija:** Prosječna ocjena kluba
+  - **Facebook:** Ime na Facebook profilu kluba
+  - **Instagram:** Ime na Instagram profilu kluba
+  - **Kontakt:** Telefonski broj ili stranica  kluba
+  - **Recenzija:** Prosječna ocjena kluba (maksimalna ocjena je 5)
   - **Minimalna dob ulaza:** Najniža dob koja je potrebna za ulazak u klub
-  - **Radno vrijeme:** Informacije o radnom vremenu za svaki dan u tjednu
+  - **Radno vrijeme:** Informacije o radnom vremenu kluba
 
