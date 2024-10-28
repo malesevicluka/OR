@@ -1,0 +1,28 @@
+nightclub_id,ime,adresa,kvart,kapacitet,facebook,instagram,kontakt,recenzija,minimalna_dob_ulaza,dan,otvaranje,zatvaranje
+1,EX. club,Izidora Kršnjavoga 1,Trešnjevka,700,EX. club,ex.club_,0991629634,4,21,petak,23:00:00,06:00:00
+1,EX. club,Izidora Kršnjavoga 1,Trešnjevka,700,EX. club,ex.club_,0991629634,4,21,subota,23:00:00,06:00:00
+2,The Secret club,Draškovićeva ul. 41,Donji grad,600,The Secret Club,thesecretclub.zagreb,0997327389,3,21,petak,23:00:00,05:00:00
+2,The Secret club,Draškovićeva ul. 41,Donji grad,600,The Secret Club,thesecretclub.zagreb,0997327389,3,21,subota,23:00:00,05:00:00
+3,XO club,Vlaška ul. 9,Donji grad,550,XO Club,xo.club.zg,0953823998,4,18,petak,23:00:00,05:00:00
+3,XO club,Vlaška ul. 9,Donji grad,550,XO Club,xo.club.zg,0953823998,4,18,subota,23:00:00,05:00:00
+4,H2O,Ulica Josipa Runjanina 3,Donji grad,700,Club H2O,clubh2ozagreb,0915100661,3,18,petak,23:00:00,05:00:00
+4,H2O,Ulica Josipa Runjanina 3,Donji grad,700,Club H2O,clubh2ozagreb,0915100661,3,18,subota,23:00:00,05:00:00
+5,Club Roko,Jarunska ul. 5,Jarun,1000,Club Roko,club.roko,0976592000,4,18,srijeda,22:00:00,04:00:00
+5,Club Roko,Jarunska ul. 5,Jarun,1000,Club Roko,club.roko,0976592000,4,18,petak,23:00:00,04:00:00
+5,Club Roko,Jarunska ul. 5,Jarun,1000,Club Roko,club.roko,0976592000,4,18,subota,23:00:00,04:00:00
+6,BBS,Remetinečka cesta 11,Kajzerica,600,Night Club BBS,bbsnightclub,0953333123,3,21,srijeda,22:00:00,05:00:00
+6,BBS,Remetinečka cesta 11,Kajzerica,600,Night Club BBS,bbsnightclub,0953333123,3,21,petak,22:00:00,05:00:00
+6,BBS,Remetinečka cesta 11,Kajzerica,600,Night Club BBS,bbsnightclub,0953333123,3,21,subota,22:00:00,05:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,ponedjeljak,23:00:00,04:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,utorak,23:00:00,04:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,srijeda,23:00:00,04:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,četvrtak,23:00:00,04:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,petak,23:00:00,05:00:00
+7,OUT Bunker,Ilica 16,Centar,400,OUT Bunker,outbunker,0981600123,4,18,subota,23:00:00,05:00:00
+8,Mint,Ul. Florijana Andrašeca 14,Trešnjevka,600,MINT club & more,mintzagreb,mintclub.hr,4,21,srijeda,22:00:00,03:00:00
+8,Mint,Ul. Florijana Andrašeca 14,Trešnjevka,600,MINT club & more,mintzagreb,mintclub.hr,4,21,petak,21:00:00,04:00:00
+8,Mint,Ul. Florijana Andrašeca 14,Trešnjevka,600,MINT club & more,mintzagreb,mintclub.hr,4,21,subota,21:00:00,04:00:00
+9,Katran,Radnička cesta 27,Trnje,950,Katran Zagreb,katranzagreb,"",4,18,petak,23:00:00,05:00:00
+9,Katran,Radnička cesta 27,Trnje,950,Katran Zagreb,katranzagreb,"",4,18,subota,23:00:00,05:00:00
+10,Ritz,Ul. Florijana Andrašeca 14,Trešnjevka,800,Ritz Club,ricklubzg,0913551355,3,21,petak,23:00:00,05:00:00
+10,Ritz,Ul. Florijana Andrašeca 14,Trešnjevka,800,Ritz Club,ricklubzg,0913551355,3,21,subota,23:00:00,05:00:00
