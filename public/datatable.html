@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klubovi u Zagrebu - Pregled i filtriranje</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pregled i filtriranje zagrebačkih klubova</h1>
+
+    <label for="filter">Filtriraj prema:</label>
+    <input type="text" id="filter" placeholder="Unesi pojam">
+    <select id="attribute">
+        <option value="all">Svi atributi</option>
+        <option value="Ime">Ime</option>
+        <option value="Kvart">Kvart</option>
+        <option value="Kapacitet">Kapacitet</option>
+        <option value="Recenzija">Recenzija</option>
+        <option value="Minimalna_dob_ulaza">Minimalna dob ulaza</option>
+    </select>
+    <button onclick="filterData()">Filtriraj</button>
+    <button onclick="downloadCSV()">Preuzmi CSV</button>
+    <button onclick="downloadJSON()">Preuzmi JSON</button>
+
+    <table id="clubTable">
+        <thead>
+            <tr>
+                <th>Ime</th>
+                <th>Adresa</th>
+                <th>Kvart</th>
+                <th>Kapacitet</th>
+                <th>Facebook</th>
+                <th>Instagram</th>
+                <th>Kontakt</th>
+                <th>Recenzija</th>
+                <th>Minimalna dob ulaza</th>
+                <th>Radno vrijeme</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        async function fetchData(filter = '', attribute = '') {
+            const response = await fetch(`/api/clubs?filter=${filter}&attribute=${attribute}`);
+            const data = await response.json();
+            
+            const tbody = document.querySelector("#clubTable tbody");
+            tbody.innerHTML = '';
+            
+            data.forEach(club => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${club.ime}</td>
+                    <td>${club.adresa}</td>
+                    <td>${club.kvart}</td>
+                    <td>${club.kapacitet}</td>
+                    <td>${club.facebook}</td>
+                    <td>${club.instagram}</td>
+                    <td>${club.kontakt}</td>
+                    <td>${club.recenzija}</td>
+                    <td>${club.minimalna_dob_ulaza}</td>
+                    <td>${Array.isArray(club.Radno_vrijeme) ? club.Radno_vrijeme.join(', ') : 'Nema radnog vremena'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        
+        function filterData() {
+            const filter = document.getElementById("filter").value;
+            const attribute = document.getElementById("attribute").value;
+
+            fetchData(filter, attribute);
+        }
+
+        
+        window.onload = () => fetchData();
+
+        function downloadCSV() {
+            const rows = document.querySelectorAll("#clubTable tbody tr");
+            const csvData = [];
+            
+            
+            const headers = Array.from(document.querySelectorAll("#clubTable th")).map(th => th.innerText);
+            csvData.push(headers.join(","));
+            
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const rowData = Array.from(cells).map(cell => cell.innerText);
+                csvData.push(rowData.join(","));
+            });
+            
+            
+            const csvFile = new Blob([csvData.join("\n")], { type: "text/csv" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(csvFile);
+            link.download = "club_data.csv";
+            link.click();
+        }
+
+        function downloadJSON() {
+            const rows = document.querySelectorAll("#clubTable tbody tr");
+            const jsonData = [];
+            
+            
+            rows.forEach(row => {
+                const cells = row.querySelectorAll("td");
+                const rowData = {
+                    ime: cells[0].innerText,
+                    adresa: cells[1].innerText,
+                    kvart: cells[2].innerText,
+                    kapacitet: cells[3].innerText,
+                    facebook: cells[4].innerText,
+                    instagram: cells[5].innerText,
+                    kontakt: cells[6].innerText,
+                    recenzija: cells[7].innerText,
+                    minimalna_dob_ulaza: cells[8].innerText,
+                    radno_vrijeme: cells[9].innerText
+                };
+                jsonData.push(rowData);
+            });
+            
+            
+            const jsonFile = new Blob([JSON.stringify(jsonData, null, 2)], { type: "application/json" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(jsonFile);
+            link.download = "club_data.json"; // Ime datoteke
+            link.click();
+        }
+        
+        
+
+
+    </script>
+    
+</body>
+</html>
