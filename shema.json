@@ -1,0 +1,88 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "http://example.com/example.json",
+    "type": "array",
+    "default": [],
+    "title": "Root Schema",
+    "items": {
+        "type": "object",
+        "title": "A Schema",
+        "required": [
+            "Naziv",
+            "Adresa",
+            "Kvart",
+            "Kapacitet",
+            "Facebook",
+            "Instagram",
+            "Kontakt",
+            "Recenzija",
+            "Minimalna_dob_ulaza",
+            "Radno_vrijeme"
+        ],
+        "properties": {
+            "Naziv": {
+                "type": "string",
+                "title": "The Naziv Schema"
+            },
+            "Adresa": {
+                "type": "string",
+                "title": "The Adresa Schema"
+            },
+            "Kvart": {
+                "type": "string",
+                "title": "The Kvart Schema"
+            },
+            "Kapacitet": {
+                "type": "integer",
+                "title": "The Kapacitet Schema"
+            },
+            "Facebook": {
+                "type": "string",
+                "title": "The Facebook Schema"
+            },
+            "Instagram": {
+                "type": "string",
+                "title": "The Instagram Schema"
+            },
+            "Kontakt": {
+                "type": "string",
+                "title": "The Kontakt Schema"
+            },
+            "Recenzija": {
+                "type": "integer",
+                "title": "The Recenzija Schema"
+            },
+            "Minimalna_dob_ulaza": {
+                "type": "integer",
+                "title": "The Minimalna_dob_ulaza Schema"
+            },
+            "Radno_vrijeme": {
+                "type": "array",
+                "title": "The Radno_vrijeme Schema",
+                "items": {
+                    "type": "object",
+                    "title": "A Schema",
+                    "required": [
+                        "Dan",
+                        "Otvaranje",
+                        "Zatvaranje"
+                    ],
+                    "properties": {
+                        "Dan": {
+                            "type": "string",
+                            "title": "The Dan Schema"
+                        },
+                        "Otvaranje": {
+                            "type": "string",
+                            "title": "The Otvaranje Schema"
+                        },
+                        "Zatvaranje": {
+                            "type": "string",
+                            "title": "The Zatvaranje Schema"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
