@@ -1,0 +1,152 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Nightclubs API",
+      "description": "API for managing nightclubs, providing CRUD operations and other functionalities.",
+      "version": "1.0.0",
+      "contact": {
+        "name": "Your Name",
+        "email": "your.email@example.com"
+      },
+      "license": {
+        "name": "CC0 1.0 Universal",
+        "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    },
+    "paths": {
+      "/nightclubs": {
+        "get": {
+          "summary": "Get all nightclubs",
+          "description": "Fetch a list of all nightclubs.",
+          "responses": {
+            "200": {
+              "description": "A list of nightclubs.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Nightclub" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "summary": "Add a new nightclub",
+          "description": "Create a new nightclub entry in the database.",
+          "requestBody": {
+            "description": "Nightclub object that needs to be added",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Nightclub" }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Nightclub created successfully."
+            }
+          }
+        }
+      },
+      "/nightclubs/{id}": {
+        "get": {
+          "summary": "Get nightclub by ID",
+          "description": "Retrieve a specific nightclub by its ID.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the nightclub",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Details of the requested nightclub.",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/Nightclub" }
+                }
+              }
+            },
+            "404": {
+              "description": "Nightclub not found."
+            }
+          }
+        },
+        "put": {
+          "summary": "Update nightclub",
+          "description": "Update the details of an existing nightclub.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the nightclub",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "requestBody": {
+            "description": "Updated nightclub object",
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Nightclub" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Nightclub updated successfully."
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete nightclub",
+          "description": "Remove a nightclub from the database.",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the nightclub",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Nightclub deleted successfully."
+            },
+            "404": {
+              "description": "Nightclub not found."
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Nightclub": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "naziv": { "type": "string" },
+            "adresa": { "type": "string" },
+            "kvart": { "type": "string" },
+            "kapacitet": { "type": "integer" },
+            "facebook": { "type": "string" },
+            "instagram": { "type": "string" },
+            "kontakt": { "type": "string" },
+            "recenzija": { "type": "string" },
+            "minimalna_dob_ulaza": { "type": "integer" }
+          },
+          "required": ["naziv", "adresa"]
+        }
+      }
+    }
+  }
+  
