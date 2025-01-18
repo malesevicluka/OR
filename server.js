@@ -1,18 +1,160 @@
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
+const session = require('express-session');
+const passport = require('passport');
+const Auth0Strategy = require('passport-auth0');
+const bodyParser = require('body-parser');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
+app.use(express.json());
 app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
+
 const port = 3000;
+
 
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'NocniKlubovi',
-    password: 'luka',  
+    password: 'postgres',
     port: 5432,
 });
-const { parse } = require('json2csv'); 
+
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
+
+passport.use(
+    new Auth0Strategy(
+        {
+            domain: process.env.AUTH0_DOMAIN,
+            clientID: process.env.AUTH0_CLIENT_ID,
+            clientSecret: process.env.AUTH0_CLIENT_SECRET,
+            callbackURL: process.env.AUTH0_CALLBACK_URL,
+        },
+        (accessToken, refreshToken, extraParams, profile, done) => {
+            return done(null, profile);
+        }
+    )
+);
+
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+const checkAuthentication = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
+};
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/dynamic-content', (req, res) => {
+    const isAuthenticated = req.isAuthenticated();
+    const dynamicContent = isAuthenticated
+        ? '<a href="/profile">Korisnički profil</a><br><a href="/logout">Odjava</a>'
+        : '<a href="/login">Prijava</a>';
+    res.send(dynamicContent);
+});
+
+app.get('/login', passport.authenticate('auth0', {
+    scope: 'openid email profile',
+}));
+
+app.get('/callback',
+    passport.authenticate('auth0', {
+        failureRedirect: '/',
+    }),
+    (req, res) => {
+        res.redirect('/');
+    }
+);
+
+app.get('/profile', checkAuthentication, (req, res) => {
+    res.send(
+        `<h1>Korisnički profil</h1>
+         <pre>${JSON.stringify(req.user, null, 2)}</pre>
+         <a href="/refresh-exports">Osvježi preslike</a><br>
+         <a href="/logout">Odjava</a><br>
+         <a href="/">Početna stranica</a>`
+    );
+});
+
+app.get('/logout', (req, res) => {
+    req.logout(() => {
+        res.redirect('/');
+    });
+});
+
+
+app.get('/refresh-exports', checkAuthentication, async (req, res) => {
+    try {
+        const result = await pool.query("SELECT * FROM nightclubs");
+        
+        
+        const csvData = convertToCSV(result.rows);
+        fs.writeFileSync('public/klubovi.csv', csvData);
+        
+        
+        const jsonData = {
+            "@context": {
+                "@vocab": "https://schema.org/",
+                "ime": "name",
+                "adresa": "address"
+            },
+            "@type": "NightClub",
+            "nightclubs": result.rows
+        };
+        fs.writeFileSync('public/klubovi.json', JSON.stringify(jsonData, null, 2));
+        
+        res.send('Exports refreshed successfully! <br><a href="/">Back to home</a>');
+    } catch (error) {
+        console.error('Error refreshing exports:', error);
+        res.status(500).send('Error refreshing exports');
+    }
+});
+
+
+function convertToCSV(data) {
+    if (data.length === 0) return '';
+    
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    
+    csvRows.push(headers.join(','));
+    
+    for (const row of data) {
+        const values = headers.map(header => {
+            const val = row[header];
+            return `"${val}"`; 
+        });
+        csvRows.push(values.join(','));
+    }
+    
+    return csvRows.join('\n');
+}
+
+
 app.get('/api/clubs', async (req, res) => {
     try {
         const filter = req.query.filter || '';
@@ -90,18 +232,14 @@ app.get('/api/clubs', async (req, res) => {
 });
 
 
-const bodyParser = require("body-parser");
 
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-
-
-// Middleware
 app.use(bodyParser.json());
 
 
-// Swagger OpenAPI specifikacija
+
 const swaggerOptions = {
   definition: {
     openapi: "3.0.3",
@@ -110,8 +248,8 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "RESTful API for managing nightclubs",
       contact: {
-        name: "Your Name",
-        email: "your.email@example.com",
+        name: "Luka",
+        email: "lm55163@fer.hr"
       },
       license: {
         name: "CC0 1.0 Universal",
@@ -125,7 +263,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./server.js"], // Definicije ruta iz ove datoteke
+  apis: ["./server.js"], 
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
@@ -140,7 +278,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
  *       properties:
  *         id:
  *           type: integer
- *         naziv:
+ *         ime:
  *           type: string
  *         adresa:
  *           type: string
@@ -155,11 +293,11 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
  *         kontakt:
  *           type: string
  *         recenzija:
- *           type: string
+ *           type: integer
  *         minimalna_dob_ulaza:
  *           type: integer
  *       required:
- *         - naziv
+ *         - ime
  *         - adresa
  */
 
@@ -239,7 +377,7 @@ app.get("/nightclubs/:id", async (req, res) => {
 app.get("/nightclubs/kvart/:kvart", async (req, res) => {
   try {
     const { kvart } = req.params;
-    const result = await pool.query("SELECT * FROM nightclubs WHERE kvart = $1", [kvart]);
+    const result = await pool.query("SELECT * FROM nightclubs WHERE kvart ILIKE  $1", [kvart]);
     res.json({ status: "success", data: result.rows });
   } catch (err) {
     res.status(500).json({ status: "error", message: err.message });
@@ -260,13 +398,15 @@ app.get("/nightclubs/kvart/:kvart", async (req, res) => {
  *     responses:
  *       201:
  *         description: Nightclub created successfully
+ *       500:
+ *          description: Error accured!
  */
 app.post("/nightclubs", async (req, res) => {
   try {
-    const { naziv, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza } = req.body;
+    const { ime, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza } = req.body;
     const result = await pool.query(
-      "INSERT INTO nightclubs (naziv, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-      [naziv, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza]
+      "INSERT INTO nightclubs (ime, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
+      [ime, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza]
     );
     res.status(201).json({ status: "success", data: result.rows[0] });
   } catch (err) {
@@ -294,14 +434,16 @@ app.post("/nightclubs", async (req, res) => {
  *     responses:
  *       200:
  *         description: Nightclub updated successfully
+ *       500:
+ *          description: Nightclub not found
  */
 app.put("/nightclubs/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { naziv, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza } = req.body;
+    const { ime, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza } = req.body;
     const result = await pool.query(
-      "UPDATE nightclubs SET naziv = $1, adresa = $2, kvart = $3, kapacitet = $4, facebook = $5, instagram = $6, kontakt = $7, recenzija = $8, minimalna_dob_ulaza = $9 WHERE id = $10 RETURNING *",
-      [naziv, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza, id]
+      "UPDATE nightclubs SET ime = $1, adresa = $2, kvart = $3, kapacitet = $4, facebook = $5, instagram = $6, kontakt = $7, recenzija = $8, minimalna_dob_ulaza = $9 WHERE id = $10 RETURNING *",
+      [ime, adresa, kvart, kapacitet, facebook, instagram, kontakt, recenzija, minimalna_dob_ulaza, id]
     );
     res.json({ status: "success", data: result.rows[0] });
   } catch (err) {
@@ -323,6 +465,8 @@ app.put("/nightclubs/:id", async (req, res) => {
  *     responses:
  *       200:
  *         description: Nightclub deleted successfully
+ *       500:
+ *          description: Nightclub not found
  */
 app.delete("/nightclubs/:id", async (req, res) => {
   try {
