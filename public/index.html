@@ -3,15 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Klubovi u Zagrebu - Preuzimanje podataka</title>
+    <title>Klubovi u Zagrebu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        nav {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        .nav-links a:hover {
+            background-color: #e0e0e0;
+        }
+        #userInfo {
+            margin-top: 10px;
+            font-style: italic;
+        }
+        .main-content {
+            margin-top: 20px;
+        }
+        .download-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .download-section a {
+            margin-right: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Dobrodošli na stranicu za preuzimanje podataka o zagrebačkim klubovima</h1>
-    <p>Ovdje možete preuzeti podatke u JSON i CSV formatu.</p>
+    <nav>
+        <div class="nav-links">
+            <a href="/">Početna</a>
+            <a href="/datatable.html">Pregled podataka</a>
+            <span id="authLinks">
+                
+            </span>
+        </div>
+        <div id="userInfo">
+            
+        </div>
+    </nav>
 
-    <a href="nightclubs.json" download="klubovi.json">Preuzmi JSON</a>
-    <a href="nightclubs.csv" download="klubovi.csv">Preuzmi CSV</a>
+    <div class="main-content">
+        <h1>Dobrodošli na stranicu za preuzimanje podataka o zagrebačkim klubovima</h1>
+        
+        <div class="download-section">
+            <h2>Preuzimanje podataka</h2>
+            <p>Ovdje možete preuzeti podatke u JSON i CSV formatu:</p>
+            <a href="klubovi.json" download="klubovi.json">Preuzmi JSON</a>
+            <a href="klubovi.csv" download="klubovi.csv">Preuzmi CSV</a>
+        </div>
+    </div>
 
-    <p>Za pregled podataka i filtriranje, posjetite <a href="datatable.html">ovdje</a>.</p>
+    <script>
+    async function updateAuthLinks() {
+        try {
+            const response = await fetch('/dynamic-content');
+            const content = await response.text();
+            document.getElementById('authLinks').innerHTML = content;
+        } catch (error) {
+            console.error('Error updating auth links:', error);
+        }
+    }
+
+   
+    window.addEventListener('load', updateAuthLinks);
+</script>
 </body>
 </html>
